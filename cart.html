@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VEXRA — Cart</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Inter',sans-serif;
+  background:#fdfdfd;
+  color:#111;
+  line-height:1.7;
+}
+h1,h2{font-family:'Playfair Display',serif}
+
+/* Header */
+header{
+  position:fixed;
+  top:0;left:0;right:0;
+  background:#fff;
+  padding:20px 60px;
+  border-bottom:1px solid rgba(0,0,0,.06);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:20;
+}
+nav a{
+  margin-left:28px;
+  text-decoration:none;
+  color:#000;
+  font-size:12px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+/* Cart Icon */
+#cartIcon{
+  position:fixed;
+  top:22px;
+  right:60px;
+  font-size:26px;
+  cursor:pointer;
+  z-index:30;
+}
+#cartCount{
+  position:absolute;
+  top:-8px;
+  right:-10px;
+  width:20px;
+  height:20px;
+  background:#000;
+  color:#fff;
+  border-radius:50%;
+  font-size:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:600;
+}
+
+/* Overlay */
+.cart-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  opacity:0;
+  visibility:hidden;
+  transition:.4s;
+  z-index:25;
+}
+.cart-overlay.active{
+  opacity:1;
+  visibility:visible;
+}
+
+/* Cart Panel */
+.cart-panel{
+  position:fixed;
+  top:0;
+  right:-520px;
+  width:480px;
+  height:100%;
+  background:#fff;
+  box-shadow:-20px 0 50px rgba(0,0,0,.18);
+  padding:40px;
+  transition:.55s cubic-bezier(.22,.61,.36,1);
+  z-index:30;
+  display:flex;
+  flex-direction:column;
+}
+.cart-panel.open{right:0}
+
+.cart-panel h2{
+  font-size:30px;
+  margin-bottom:30px;
+}
+
+/* Empty cart */
+.empty-cart{
+  margin-top:80px;
+  text-align:center;
+  opacity:.6;
+}
+
+/* Items */
+.cart-item{
+  display:flex;
+  gap:15px;
+  padding-bottom:18px;
+  margin-bottom:22px;
+  border-bottom:1px solid rgba(0,0,0,.08);
+}
+.cart-item img{
+  width:80px;
+  height:80px;
+  object-fit:cover;
+  border-radius:8px;
+}
+.cart-item-info{flex:1}
+.cart-item-name{font-weight:600;margin-bottom:4px}
+.cart-item-price{font-size:14px;margin-bottom:10px}
+
+.qty-controls{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.qty-controls button{
+  width:28px;
+  height:28px;
+  border:1px solid #000;
+  background:#fff;
+  cursor:pointer;
+  font-weight:600;
+  transition:.2s;
+}
+.qty-controls button:hover:not(:disabled){
+  background:#000;
+  color:#fff;
+}
+.qty-controls button:disabled{
+  opacity:.3;
+  cursor:not-allowed;
+}
+.remove-btn{
+  font-size:12px;
+  color:#b00020;
+  cursor:pointer;
+  margin-top:8px;
+  display:inline-block;
+}
+
+/* Footer */
+.cart-footer{
+  margin-top:auto;
+  padding-top:25px;
+  border-top:2px solid rgba(0,0,0,.1);
+  text-align:right;
+}
+.cart-total{
+  font-size:22px;
+  font-weight:700;
+  margin-bottom:18px;
+}
+.cart-footer button{
+  padding:12px 30px;
+  margin-left:6px;
+  border:none;
+  background:#000;
+  color:#fff;
+  cursor:pointer;
+  font-weight:600;
+  transition:.3s;
+}
+.cart-footer button:hover{
+  background:transparent;
+  color:#000;
+  border:1px solid #000;
+}
+
+/* Mobile */
+@media(max-width:520px){
+  .cart-panel{width:100%}
+  #cartIcon{right:20px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <strong>VEXRA</strong>
+  <nav>
+    <a href="shop.html">Shop</a>
+    <a href="clothing/clothing.html">Clothing</a>
+  </nav>
+</header>
+
+<div id="cartIcon">🛒<div id="cartCount">0</div></div>
+
+<div class="cart-overlay" id="overlay"></div>
+
+<div class="cart-panel" id="cartPanel">
+  <h2>Your Cart</h2>
+  <div id="cartItems"></div>
+
+  <div class="cart-footer">
+    <div class="cart-total" id="cartTotal">Total: 0 kr</div>
+    <button id="clearCart">Clear Cart</button>
+    <button>Checkout</button>
+  </div>
+</div>
+
+<script>
+const cartIcon = document.getElementById('cartIcon');
+const cartPanel = document.getElementById('cartPanel');
+const overlay = document.getElementById('overlay');
+const cartItemsEl = document.getElementById('cartItems');
+const cartTotalEl = document.getElementById('cartTotal');
+const cartCountEl = document.getElementById('cartCount');
+const clearCartBtn = document.getElementById('clearCart');
+
+let cart = JSON.parse(localStorage.getItem('vexraCart')) || [];
+
+const formatPrice = n => n.toLocaleString('en-US') + ' kr';
+
+function saveCart(){
+  localStorage.setItem('vexraCart', JSON.stringify(cart));
+}
+
+cartIcon.onclick = ()=>{
+  cartPanel.classList.add('open');
+  overlay.classList.add('active');
+};
+overlay.onclick = ()=>{
+  cartPanel.classList.remove('open');
+  overlay.classList.remove('active');
+};
+
+function renderCart(){
+  cartItemsEl.innerHTML = '';
+  let total = 0;
+  let count = 0;
+
+  if(cart.length === 0){
+    cartItemsEl.innerHTML = `<div class="empty-cart">Your cart is empty</div>`;
+  }
+
+  cart.forEach((item, index)=>{
+    total += item.price * item.qty;
+    count += item.qty;
+
+    const div = document.createElement('div');
+    div.className = 'cart-item';
+    div.innerHTML = `
+      <img src="${item.img}">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">${formatPrice(item.price)}</div>
+        <div class="qty-controls">
+          <button ${item.qty===1?'disabled':''}>−</button>
+          <span>${item.qty}</span>
+          <button>+</button>
+        </div>
+        <span class="remove-btn">Remove</span>
+      </div>
+    `;
+
+    const [decBtn, incBtn] = div.querySelectorAll('button');
+    decBtn.onclick = ()=>{ item.qty--; saveCart(); renderCart(); };
+    incBtn.onclick = ()=>{ item.qty++; saveCart(); renderCart(); };
+    div.querySelector('.remove-btn').onclick = ()=>{
+      cart.splice(index,1); saveCart(); renderCart();
+    };
+
+    cartItemsEl.appendChild(div);
+  });
+
+  cartTotalEl.textContent = `Total: ${formatPrice(total)}`;
+  cartCountEl.textContent = count;
+}
+
+clearCartBtn.onclick = ()=>{
+  cart = [];
+  saveCart();
+  renderCart();
+};
+
+renderCart();
+</script>
+
+</body>
+</html>
