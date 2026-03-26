@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marine Purity — VEXRA</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Inter',sans-serif;
+  background:#fff;
+  color:#111;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+h1,h2,h3{font-family:'Playfair Display',serif}
+
+/* HEADER */
+header{
+  position:fixed;
+  top:0;left:0;right:0;
+  background:#fff;
+  padding:20px 60px;
+  border-bottom:1px solid rgba(0,0,0,.05);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:30;
+}
+
+/* NAV */
+nav{
+  display:flex;
+  align-items:center;
+  gap:32px;
+}
+nav a{
+  text-decoration:none;
+  color:#000;
+  font-size:12px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+}
+
+/* CART ICON */
+#openCart{
+  font-size:22px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+}
+#cartCount{
+  margin-left:6px;
+  min-width:16px;
+  height:16px;
+  background:#000;
+  color:#fff;
+  border-radius:50%;
+  font-size:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:600;
+  padding:0 4px;
+}
+
+/* CART OVERLAY & DRAWER */
+#cartOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .45s ease;
+  z-index:40;
+}
+#cartOverlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+#cartDrawer{
+  position:absolute;
+  top:0;
+  right:0;
+  width:34%;
+  height:100%;
+  background:#fff;
+  padding:32px;
+  transform:translateX(100%) scale(.98);
+  opacity:0;
+  transition:
+    transform .55s cubic-bezier(.22,1,.36,1),
+    opacity .35s ease;
+  display:flex;
+  flex-direction:column;
+}
+#cartOverlay.active #cartDrawer{
+  transform:translateX(0) scale(1);
+  opacity:1;
+}
+
+/* CART CONTENT */
+.cart-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:24px;
+}
+.cart-header h2{
+  font-family:'Playfair Display',serif;
+  font-size:28px;
+}
+.close-cart{
+  font-size:22px;
+  cursor:pointer;
+}
+
+.cart-items{
+  flex:1;
+  overflow:auto;
+}
+.cart-item{
+  display:flex;
+  gap:14px;
+  margin-bottom:22px;
+}
+.cart-item img{
+  width:70px;
+  height:90px;
+  object-fit:cover;
+  border-radius:10px;
+}
+.cart-item h4{
+  font-size:14px;
+}
+.cart-item p{
+  font-size:13px;
+  opacity:.7;
+}
+.qty{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-top:6px;
+}
+.qty button{
+  width:26px;
+  height:26px;
+  border:1px solid #000;
+  background:#fff;
+  cursor:pointer;
+}
+.remove{
+  font-size:12px;
+  margin-top:6px;
+  opacity:.5;
+  cursor:pointer;
+}
+.remove:hover{opacity:1}
+
+.cart-footer{
+  border-top:1px solid rgba(0,0,0,.1);
+  padding-top:18px;
+}
+.total{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:14px;
+  font-weight:600;
+}
+.checkout{
+  width:100%;
+  padding:16px;
+  background:#000;
+  color:#fff;
+  border:none;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  cursor:pointer;
+}
+
+/* MAIN CONTENT */
+main{
+  margin-top:130px;
+  padding:0 8%;
+}
+.product-page{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:80px;
+  align-items:start;
+  animation:fadeUp .8s ease forwards;
+}
+
+/* PRODUCT IMAGE */
+.product-image{
+  height:600px;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,.15);
+}
+.product-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:.5s ease;
+}
+.product-image:hover img{transform:scale(1.05)}
+
+/* PURCHASE SECTION */
+.purchase{
+  margin-top:25px;
+}
+.price{
+  font-size:22px;
+  font-weight:600;
+  margin-bottom:12px;
+}
+.add-btn{
+  padding:14px 36px;
+  background:#000;
+  color:#fff;
+  border:1px solid #000;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  font-size:12px;
+  cursor:pointer;
+  transition:.3s;
+}
+.add-btn:hover{
+  background:transparent;
+  color:#000;
+}
+
+/* PRODUCT INFO */
+.product-info h1{
+  font-size:48px;
+  margin-bottom:40px;
+}
+.notes{
+  margin-bottom:22px;
+}
+.notes h3{
+  font-size:13px;
+  letter-spacing:2px;
+  margin-bottom:6px;
+  text-transform:uppercase;
+}
+.notes p{
+  font-size:15px;
+  opacity:.85;
+}
+.description{
+  margin-top:30px;
+  max-width:520px;
+  font-size:15px;
+  opacity:.9;
+}
+
+/* ANIMATION */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:none}
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .product-page{grid-template-columns:1fr}
+  main{padding:0 6%}
+  nav{gap:18px;}
+  #cartDrawer{width:90%}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <strong>VEXRA</strong>
+  <nav>
+    <a href="shop.html">Shop</a>
+    <a href="clothing/clothing.html">Clothing</a>
+    <a id="openCart">
+      👝
+      <span id="cartCount">0</span>
+    </a>
+  </nav>
+</header>
+
+<!-- CART -->
+<div id="cartOverlay">
+  <div id="cartDrawer">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <div class="close-cart">✕</div>
+    </div>
+
+    <div class="cart-items" id="cartItems"></div>
+
+    <div class="cart-footer">
+      <div class="total">
+        <span>Total</span>
+        <span id="cartTotal">0 kr</span>
+      </div>
+      <button class="checkout">Checkout</button>
+    </div>
+  </div>
+</div>
+
+<main>
+<div class="product-page">
+
+  <!-- LEFT -->
+  <div>
+    <div class="product-image">
+      <img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f" alt="Marine Purity">
+    </div>
+
+    <div class="purchase">
+      <div class="price">2,000 kr</div>
+      <button class="add-btn" onclick="addToCart({
+        name:'Marine Purity',
+        price:2000,
+        img:'https://images.unsplash.com/photo-1523293182086-7651a899d37f',
+        qty:1
+      })">Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="product-info">
+    <h1>Marine Purity</h1>
+
+    <div class="notes">
+      <h3>Top Notes</h3>
+      <p>Sea Salt, Bergamot</p>
+    </div>
+
+    <div class="notes">
+      <h3>Heart Notes</h3>
+      <p>Marine Accord, Driftwood</p>
+    </div>
+
+    <div class="notes">
+      <h3>Base Notes</h3>
+      <p>Ambergris, Clean Musk</p>
+    </div>
+
+    <p class="description">
+      Marine Purity is inspired by open horizons and cold ocean air.
+      A fragrance created to feel clean, expansive, and modern.
+      It is special because it captures freshness without sharpness.
+    </p>
+  </div>
+
+</div>
+</main>
+
+<script>
+// Shared cart logic
+const overlay = document.getElementById('cartOverlay');
+const cartItems = document.getElementById('cartItems');
+const cartCount = document.getElementById('cartCount');
+const cartTotal = document.getElementById('cartTotal');
+
+let cart = JSON.parse(localStorage.getItem('vexraCart')) || [];
+
+function renderCart(){
+  cartItems.innerHTML = '';
+  let total = 0;
+  cart.forEach((item,i)=>{
+    total += item.price * item.qty;
+    cartItems.innerHTML += `
+      <div class="cart-item">
+        <img src="${item.img}">
+        <div>
+          <h4>${item.name}</h4>
+          <p>${item.price} kr</p>
+          <div class="qty">
+            <button onclick="qty(${i},-1)">−</button>
+            <span>${item.qty}</span>
+            <button onclick="qty(${i},1)">+</button>
+          </div>
+          <div class="remove" onclick="removeItem(${i})">Remove</div>
+        </div>
+      </div>`;
+  });
+  cartCount.textContent = cart.reduce((s,i)=>s+i.qty,0);
+  cartTotal.textContent = total + " kr";
+  localStorage.setItem('vexraCart',JSON.stringify(cart));
+}
+
+function qty(i,d){
+  cart[i].qty += d;
+  if(cart[i].qty <= 0) cart.splice(i,1);
+  renderCart();
+}
+function removeItem(i){
+  cart.splice(i,1);
+  renderCart();
+}
+
+document.getElementById('openCart').onclick = ()=>{
+  renderCart();
+  overlay.classList.add('active');
+};
+document.querySelector('.close-cart').onclick = ()=>{
+  overlay.classList.remove('active');
+};
+overlay.onclick = e=>{
+  if(e.target===overlay) overlay.classList.remove('active');
+};
+
+function addToCart(product){
+  const existing = cart.find(i=>i.name===product.name);
+  existing ? existing.qty++ : cart.push(product);
+  renderCart();
+  overlay.classList.add('active');
+}
+
+renderCart();
+</script>
+
+</body>
+</html>
