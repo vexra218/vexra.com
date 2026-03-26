@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop — VEXRA</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#fff;color:#111}
+h1,h2{font-family:'Playfair Display',serif}
+
+/* Header */
+header{
+  position:fixed;top:0;left:0;right:0;
+  background:#fff;
+  padding:20px 60px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid rgba(0,0,0,.05);
+  z-index:10
+}
+
+nav a{
+  margin-left:30px;
+  text-decoration:none;
+  color:#000;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  font-size:13px
+}
+
+main{margin-top:140px}
+
+/* Title + Filter */
+.title-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 8%;
+  margin-bottom:80px
+}
+
+.section-title{font-size:46px}
+
+.filter-btn{
+  padding:10px 28px;
+  border:1px solid #000;
+  background:#fff;
+  font-size:12px;
+  letter-spacing:2px;
+  cursor:pointer;
+  text-transform:uppercase
+}
+.filter-btn:hover{background:#000;color:#fff}
+
+/* Filter Panel */
+.filter-panel{
+  position:fixed;
+  top:0;right:-420px;
+  width:420px;
+  height:100%;
+  background:#fff;
+  border-left:1px solid rgba(0,0,0,.1);
+  padding:50px;
+  transition:.4s ease;
+  z-index:20
+}
+.filter-panel.open{right:0}
+
+.filter-panel h3{
+  font-size:22px;
+  margin-bottom:40px
+}
+
+.filter-group{margin-bottom:35px}
+
+.filter-group label{
+  display:block;
+  font-size:12px;
+  letter-spacing:1px;
+  margin-bottom:10px;
+  opacity:.7
+}
+
+.filter-group select,
+.filter-group input{
+  width:100%;
+  padding:12px;
+  border:1px solid #ccc;
+  font-size:13px
+}
+
+.error-text{
+  color:#b00020;
+  font-size:12px;
+  margin-top:8px;
+  display:none
+}
+
+.apply-btn{
+  width:100%;
+  padding:16px;
+  background:#000;
+  color:#fff;
+  border:none;
+  letter-spacing:2px;
+  font-size:12px;
+  cursor:pointer;
+  text-transform:uppercase
+}
+
+/* Products */
+.product{
+  display:flex;
+  align-items:center;
+  padding:120px 8%;
+  min-height:100vh;
+  gap:60px
+}
+
+.product:nth-child(even){
+  flex-direction:row-reverse;
+  background:#f9f9f9
+}
+
+.product-image{
+  flex:1;
+  height:560px;
+  overflow:hidden;
+  border-radius:12px;
+  box-shadow:0 25px 50px rgba(0,0,0,.15)
+}
+.product-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:.6s ease
+}
+.product-image:hover img{transform:scale(1.05)}
+
+.product-content{flex:1;max-width:520px}
+.product-number{letter-spacing:4px;font-size:13px;opacity:.6;margin-bottom:12px}
+.product-title{font-size:42px;margin-bottom:24px}
+.product-desc{font-size:16px;line-height:1.9;opacity:.85;margin-bottom:40px}
+
+.product-btn{
+  display:inline-block;
+  padding:16px 42px;
+  background:#000;
+  color:#fff;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  font-size:12px;
+  text-decoration:none;
+  border:1px solid #000;
+  transition:.3s
+}
+.product-btn:hover{background:transparent;color:#000}
+
+@media(max-width:900px){
+  .product,
+  .product:nth-child(even){flex-direction:column}
+  .product-content{text-align:center}
+  .filter-panel{width:100%}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <strong>Vx</strong>
+  <nav>
+    <a href="outfits.html">Outfits</a>
+    <a href="clothing.html">Clothing</a>
+  </nav>
+</header>
+
+<main>
+
+<div class="title-row">
+  <h1 class="section-title">Our Collection</h1>
+  <button class="filter-btn" id="openFilter">Filter</button>
+</div>
+
+<!-- PRODUCTS (hidden metadata only for filters) -->
+
+<section class="product" data-vibe="dark" data-scent="oud wood" data-price="2000">
+  <div class="product-image"><img src="https://hasanoud.com/cdn/shop/files/IMG_5711.jpg"></div>
+  <div class="product-content">
+    <div class="product-number">01</div>
+    <h2 class="product-title">Velvet Oud</h2>
+    <p class="product-desc">An intense creation defined by depth and presence.</p>
+    <a class="product-btn" href="p1discover.html">Discover More</a>
+  </div>
+</section>
+
+<section class="product" data-vibe="sweet" data-scent="vanilla" data-price="1600">
+  <div class="product-image"><img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539"></div>
+  <div class="product-content">
+    <div class="product-number">02</div>
+    <h2 class="product-title">Noir Élégance</h2>
+    <p class="product-desc">Warm elegance with a refined sensual edge.</p>
+    <a class="product-btn" href="p2discover.html">Discover More</a>
+  </div>
+</section>
+
+<section class="product" data-vibe="sweet" data-scent="candy" data-price="1600">
+  <div class="product-image"><img src="https://parfumexquis.com/cdn/shop/files/JardinsdeMisfahUneNuitNomade_4.jpg"></div>
+  <div class="product-content">
+    <div class="product-number">03</div>
+    <h2 class="product-title">Jardin de Nuit</h2>
+    <p class="product-desc">Soft, delicate, and quietly captivating.</p>
+    <a class="product-btn" href="p3discover.html">Discover More</a>
+  </div>
+</section>
+
+<section class="product" data-vibe="fresh" data-scent="marine wood" data-price="2000">
+  <div class="product-image"><img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f"></div>
+  <div class="product-content">
+    <div class="product-number">04</div>
+    <h2 class="product-title">Marine Purity</h2>
+    <p class="product-desc">Clean horizons and endless clarity.</p>
+    <a class="product-btn" href="p4discover.html">Discover More</a>
+  </div>
+</section>
+
+</main>
+
+<!-- FILTER PANEL -->
+<div class="filter-panel" id="filterPanel">
+  <h3>Filter</h3>
+
+  <div class="filter-group">
+    <label>Vibe</label>
+    <select id="vibeFilter">
+      <option value="all">All</option>
+      <option value="sweet">Sweet</option>
+      <option value="manly">Manly</option>
+      <option value="fresh">Fresh</option>
+      <option value="dark">Dark</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label>Scent Family</label>
+    <select id="scentFilter">
+      <option value="all">All</option>
+      <option value="vanilla">Vanilla</option>
+      <option value="candy">Candy</option>
+      <option value="oud">Oud</option>
+      <option value="wood">Wood</option>
+      <option value="marine">Marine</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label>Maximum Price (kr)</label>
+    <input type="number" id="maxPrice" value="12000">
+    <div class="error-text" id="priceError">Too low (1600–12000)</div>
+  </div>
+
+  <button class="apply-btn" id="applyFilters">Apply Filters</button>
+</div>
+
+<script>
+const panel=document.getElementById('filterPanel');
+document.getElementById('openFilter').onclick=()=>panel.classList.add('open');
+
+document.getElementById('applyFilters').onclick=()=>{
+  const vibe=document.getElementById('vibeFilter').value;
+  const scent=document.getElementById('scentFilter').value;
+  const max=+document.getElementById('maxPrice').value;
+  const error=document.getElementById('priceError');
+
+  if(max<1600||max>12000){error.style.display='block';return;}
+  error.style.display='none';
+
+  document.querySelectorAll('.product').forEach(p=>{
+    const matchVibe=vibe==='all'||p.dataset.vibe===vibe;
+    const matchScent=scent==='all'||p.dataset.scent.includes(scent);
+    const matchPrice=+p.dataset.price<=max;
+    p.style.display=(matchVibe&&matchScent&&matchPrice)?'flex':'none';
+  });
+
+  panel.classList.remove('open');
+};
+</script>
+
+</body>
+</html>
